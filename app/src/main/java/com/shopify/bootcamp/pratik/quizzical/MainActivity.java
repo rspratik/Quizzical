@@ -1,5 +1,6 @@
 package com.shopify.bootcamp.pratik.quizzical;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,14 +17,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_LAST_ANSWER = "lastAnswer";
     private static final String KEY_QUESTION_ANSWERED = "questionAnswered";
     private static final String KEY_QUESTION_INDEX = "questionIndex";
-
-
     private Button trueButton, falseButton, nextButton;
-
     //private RadioButton trueRadioButton, falseRadioButton;
     private TextView questionText, resultText;
     private  Quiz quiz;
-
     private boolean lastAnswer;
     private boolean questionAnswered = false;
     private int questionIndex = 0;
@@ -33,13 +30,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         questionText = (TextView) findViewById(R.id.question);
         nextButton = (Button) findViewById(R.id.next_button);
         resultText = (TextView) findViewById(R.id.result);
         quiz = Quiz.getInstance();
-        /*questionText.setText("Two plus two is equal to four?");*/
-
 
         trueButton = (Button) findViewById(R.id.true_button);
         trueButton.setOnClickListener(new View.OnClickListener() {
@@ -103,8 +97,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //questionText.setText(quiz.getQuestions().get(0).getStatement());
-
         if(savedInstanceState!=null){
             questionAnswered = savedInstanceState.getBoolean(KEY_QUESTION_ANSWERED, false);
             questionIndex = savedInstanceState.getInt(KEY_QUESTION_INDEX, -1);
@@ -113,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
         }else{
             questionIndex = 0;
         }
-
         showQuestion();
 
         if(questionAnswered){
@@ -131,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
             resultText.setText("Incorrect!");
         }
         nextButton.setEnabled(true);
-        //nextQuestion();
     }
 
     private void showQuestion(){
@@ -148,9 +138,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void nextQuestion(){
-        questionAnswered = false;
-        questionIndex = (questionIndex + 1)% quiz.getQuestions().size();
-        showQuestion();
+        questionIndex = (questionIndex + 1);
+        if(questionIndex == quiz.getQuestions().size())
+        {
+            questionIndex = 0;
+            Intent resultIntent = new Intent(this, ResultActivity.class);
+            resultIntent.putExtra("score",0);
+            startActivity(resultIntent);
+        } else{
+        //questionIndex = (questionIndex + 1)% quiz.getQuestions().size();
+            questionAnswered = false;
+            showQuestion();
+        }
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_LAST_ANSWER, lastAnswer);
+        outState.putBoolean(KEY_QUESTION_ANSWERED, questionAnswered);
+        outState.putInt(KEY_QUESTION_INDEX, questionIndex);
+
     }
 
     @Override
@@ -181,12 +190,4 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(KEY_LAST_ANSWER, lastAnswer);
-        outState.putBoolean(KEY_QUESTION_ANSWERED, questionAnswered);
-        outState.putInt(KEY_QUESTION_INDEX, questionIndex);
-
-    }
 }
