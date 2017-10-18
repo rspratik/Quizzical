@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_LAST_ANSWER = "lastAnswer";
     private static final String KEY_QUESTION_ANSWERED = "questionAnswered";
     private static final String KEY_QUESTION_INDEX = "questionIndex";
+    private static final String KEY_SCORE = "score";
+
     private Button trueButton, falseButton, nextButton;
     //private RadioButton trueRadioButton, falseRadioButton;
     private TextView questionText, resultText;
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean lastAnswer;
     private boolean questionAnswered = false;
     private int questionIndex = 0;
+    private  int score = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
             questionAnswered = savedInstanceState.getBoolean(KEY_QUESTION_ANSWERED, false);
             questionIndex = savedInstanceState.getInt(KEY_QUESTION_INDEX, -1);
             lastAnswer = savedInstanceState.getBoolean(KEY_LAST_ANSWER);
+            score = savedInstanceState.getInt(KEY_SCORE, -1);
 
         }else{
             questionIndex = 0;
@@ -117,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         questionAnswered = true;
         lastAnswer = answer;
         if (answer == getCurrentQuestion().getAnswer()) {
+            score++;
             resultText.setText("Correct!");
         } else {
             resultText.setText("Incorrect!");
@@ -143,7 +148,8 @@ public class MainActivity extends AppCompatActivity {
         {
             questionIndex = 0;
             Intent resultIntent = new Intent(this, ResultActivity.class);
-            resultIntent.putExtra("score",0);
+            resultIntent.putExtra(ResultActivity.KEY_SCORE,score);
+            resultIntent.putExtra(ResultActivity.KEY_TOTAL,quiz.getQuestions().size());
             startActivity(resultIntent);
         } else{
         //questionIndex = (questionIndex + 1)% quiz.getQuestions().size();
@@ -159,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putBoolean(KEY_LAST_ANSWER, lastAnswer);
         outState.putBoolean(KEY_QUESTION_ANSWERED, questionAnswered);
         outState.putInt(KEY_QUESTION_INDEX, questionIndex);
+        outState.putInt(KEY_SCORE, score);
 
     }
 
