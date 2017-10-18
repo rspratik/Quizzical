@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button trueButton, falseButton, nextButton;
 
-    private RadioButton trueRadioButton, falseRadioButton;
+    //private RadioButton trueRadioButton, falseRadioButton;
     private TextView questionText, resultText;
     private  Quiz quiz;
 
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        trueRadioButton = (RadioButton) findViewById(R.id.radio_true);
+        /*trueRadioButton = (RadioButton) findViewById(R.id.radio_true);
         trueRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 checkAnswer(false);
             }
         });
-
+*/
         trueButton = (Button) findViewById(R.id.true_button);
         trueButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,15 +108,17 @@ public class MainActivity extends AppCompatActivity {
         if(savedInstanceState!=null){
             questionAnswered = savedInstanceState.getBoolean(KEY_QUESTION_ANSWERED, false);
             questionIndex = savedInstanceState.getInt(KEY_QUESTION_INDEX, -1);
-            if (questionAnswered) {
-                lastAnswer = savedInstanceState.getBoolean(KEY_LAST_ANSWER);
-                checkAnswer(lastAnswer);
-            }
+            lastAnswer = savedInstanceState.getBoolean(KEY_LAST_ANSWER);
+
         }else{
             questionIndex = 0;
         }
 
         showQuestion();
+
+        if(questionAnswered){
+            checkAnswer(lastAnswer);
+        }
 
     }
 
@@ -171,8 +173,8 @@ public class MainActivity extends AppCompatActivity {
         // Store values between instances here
         SharedPreferences preferences = getSharedPreferences("sharedPrefs", 0);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("KEY_LAST_ANSWER",lastAnswer );
-        editor.putBoolean("KEY_QUESTION_ANSWERED",questionAnswered);
+        editor.putBoolean(KEY_LAST_ANSWER,lastAnswer );
+        editor.putBoolean(KEY_QUESTION_ANSWERED,questionAnswered);
         editor.putInt(KEY_QUESTION_INDEX, questionIndex);
 
         // Commit to storage
