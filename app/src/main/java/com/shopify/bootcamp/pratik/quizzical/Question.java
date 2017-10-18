@@ -10,7 +10,7 @@ public class Question {
     private  boolean answer;
 
 
-    public boolean isAnswer() {
+    public boolean getAnswer() {
         return answer;
     }
 

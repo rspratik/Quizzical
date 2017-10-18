@@ -27,7 +27,8 @@ public class Quiz {
     public static Quiz getInstance(){
         if (quiz == null) {
             quiz = new Quiz();
-            quiz.addQuestion(new Question("The moon is made of cheese", false));
+            quiz.addQuestion(new Question("The moon is made of matter", true));
+            quiz.addQuestion(new Question("Windows is better than mac", false));
             quiz.addQuestion(new Question("The sum of the internal angles of a triangle is 180", true));
         }
         return quiz;
