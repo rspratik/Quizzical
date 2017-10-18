@@ -6,11 +6,6 @@ package com.shopify.bootcamp.pratik.quizzical;
 
 public class Question {
 
-    public Question(String statement, boolean answer) {
-        this.statement = statement;
-        this.answer = answer;
-    }
-
     private  String statement;
     private  boolean answer;
 
@@ -30,6 +25,11 @@ public class Question {
 
     public void setStatement(String statement) {
         this.statement = statement;
+    }
+
+    public Question(String statement, boolean answer) {
+        this.statement = statement;
+        this.answer = answer;
     }
 
 }

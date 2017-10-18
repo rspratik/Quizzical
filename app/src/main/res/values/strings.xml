@@ -1,6 +1,4 @@
 <resources>
     <string name="app_name">Quizzical</string>
     <string name="shopify_quiz">Shopify Quiz</string>
-    <string name="question1">two minus three equals one?</string>
-
 </resources>

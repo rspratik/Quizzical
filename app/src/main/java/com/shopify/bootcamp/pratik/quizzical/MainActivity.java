@@ -17,11 +17,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_QUESTION_ANSWERED = "questionAnswered";
 
 
-    private Button trueButton, falseButton;
+    private Button trueButton, falseButton, nextButton;
 
     private RadioButton trueRadioButton, falseRadioButton;
     private TextView questionText, resultText;
-
+    private  Quiz quiz;
 
     private boolean lastAnswer;
     private boolean questionAnswered = false;
@@ -33,8 +33,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         questionText = (TextView) findViewById(R.id.question);
-        questionText.setText("Two plus two is equal to four?");
-
+        nextButton = (Button) findViewById(R.id.next_button);
+        quiz = Quiz.getInstance();
+        /*questionText.setText("Two plus two is equal to four?");*/
 
         resultText = (TextView) findViewById(R.id.result);
 
@@ -73,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
                 checkAnswer(false);
             }
         });
+
+        questionText.setText(quiz.getQuestions().get(0).getStatement());
 
         if(savedInstanceState!=null){
             questionAnswered = savedInstanceState.getBoolean(KEY_QUESTION_ANSWERED, false);
