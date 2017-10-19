@@ -8,6 +8,7 @@ import java.util.List;
  * Created by androidbootcamp3 on 2017-10-18.
  */
 
+/*
 public class Quiz implements Serializable {
 
     private List<Question> questions = new ArrayList<>();
@@ -41,4 +42,39 @@ public class Quiz implements Serializable {
                 "questions=" + questions +
                 '}';
     }
+}
+*/
+
+
+public class Quiz implements  Serializable {
+
+    private String title;
+    private int id;
+    private List<Question> questions = new ArrayList<>();
+
+    public int getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void addQuestion(Question question) {
+        questions.add(question);
+    }
+
+    @Override
+    public String toString() {
+        return "Quiz{" +
+                "title='" + title + '\'' +
+                ", id=" + id +
+                ", questions=" + questions +
+                '}';
+    }
+
 }

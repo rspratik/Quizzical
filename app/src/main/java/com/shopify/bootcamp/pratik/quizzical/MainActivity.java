@@ -19,6 +19,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
+import static android.R.attr.id;
 import static android.R.attr.type;
 import static android.R.id.list;
 
@@ -29,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements QuizRepository.Ca
     private static final String KEY_QUESTION_INDEX = "questionIndex";
     private static final String KEY_SCORE = "score";
     private static final String KEY_QUIZ = "quiz";
+    private static final String KEY_QUIZ_ID = "quiz_id";
+
 
 
     //private Button trueButton, falseButton;
@@ -53,7 +56,10 @@ public class MainActivity extends AppCompatActivity implements QuizRepository.Ca
         //quiz = Quiz.getInstance();
         //quiz = new QuizRepository(this).getQuiz();
         //quiz = new QuizRepository(this).getRemoteQuiz();
-        new QuizRepository(this).getRemoteQuiz(this);
+        //new QuizRepository(this).getRemoteQuiz(this);
+
+        int id = getIntent().getIntExtra("quiz_id", -1);
+        new QuizRepository(this).getRemoteQuiz(id, this);
 
         radiogroup = (RadioGroup) findViewById(R.id.radiogroup);
 
@@ -92,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements QuizRepository.Ca
                 checkAnswer(false);
             }
         });
-        
+
         nextButton = (Button) findViewById(R.id.next_button);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements QuizRepository.Ca
 
         }else{
             questionIndex = 0;
-            SharedPreferences preferences = getSharedPreferences("sharedPrefs", 0);
+            /*SharedPreferences preferences = getSharedPreferences("sharedPrefs", 0);
 
             questionAnswered = preferences.getBoolean(KEY_QUESTION_ANSWERED, false);
             questionIndex = preferences.getInt(KEY_QUESTION_INDEX, 0);
@@ -121,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements QuizRepository.Ca
             Gson gson = new Gson();
             Type type = new TypeToken<Quiz>() {}.getType();
             System.out.println(quizJson);
-            quiz = gson.fromJson(quizJson, type);
+            quiz = gson.fromJson(quizJson, type);*/
         }
 
         /*showQuestion();
@@ -209,16 +215,7 @@ public class MainActivity extends AppCompatActivity implements QuizRepository.Ca
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Store values between instances here
-        /*SharedPreferences preferences = getSharedPreferences("sharedPrefs", 0);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(KEY_LAST_ANSWER,lastAnswer );
-        editor.putBoolean(KEY_QUESTION_ANSWERED,questionAnswered);
-        editor.putInt(KEY_QUESTION_INDEX, questionIndex);
-
-        // Commit to storage
-        editor.commit();
-*/    }
+    }
 
     @Override
     public void onFailure() {

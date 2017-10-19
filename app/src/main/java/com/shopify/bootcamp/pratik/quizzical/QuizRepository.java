@@ -9,6 +9,7 @@ import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Random;
 
 import okio.Okio;
@@ -26,7 +27,7 @@ public class QuizRepository {
     private  static  final  String LOG_TAG = QuizRepository.class.getSimpleName();
     private  static  final  String QUIZ_JSON = "quiz.json";
     private  static  final  String QUIZ_JSON1 = "quiz1.json";
-
+    private  static  final  String BASE_URL ="https://oolong.tahnok.me/";
 
     public QuizRepository(Context context) {
         this.context = context;
@@ -55,13 +56,38 @@ public class QuizRepository {
 
     }
 
+    public void getRemoteQuiz(int id, final Callback callback) {
+        QuizService service = getQuizService();
+
+        service.getQuiz(id).enqueue(new retrofit2.Callback<Quiz>() {
+            @Override
+            public void onResponse(Call<Quiz> call, Response<Quiz> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFailure();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Quiz> call, Throwable t) {
+                callback.onFailure();
+            }
+        });
+    }
+
+/*
+
     public void getRemoteQuiz(final Callback callback) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://oolong.tahnok.me/")
+                .baseUrl(BASE_URL)
                 .addConverterFactory(MoshiConverterFactory.create())
                 .build();
 
-        QuizService service = retrofit.create(QuizService.class);
+        //QuizService service = retrofit.create(QuizService.class);
+        QuizService service = getQuizService();
+
+*/
 /*
         try {
             Response<Quiz> response = service.getQuiz().execute();
@@ -73,7 +99,8 @@ public class QuizRepository {
         } catch (IOException e) {
             Log.e(LOG_TAG, "Failure to fetch data", e);
             return null;
-        }*/
+        }*//*
+
         service.getQuiz().enqueue(new retrofit2.Callback<Quiz>() {
             @Override
             public void onResponse(Call<Quiz> call, Response<Quiz> response) {
@@ -91,11 +118,48 @@ public class QuizRepository {
         });
 
     }
+*/
 
     public interface  Callback {
         void  onFailure();
         void  onSuccess(Quiz quiz);
     }
+
+    public interface QuizzesCallback {
+        void onFailure();
+        void onSuccess(List<Quiz> quizzes);
+    }
+
+
+    private QuizService getQuizService() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(MoshiConverterFactory.create())
+                .build();
+        return retrofit.create(QuizService.class);
+    }
+
+    public void getRemoteQuizzes(final QuizzesCallback callback) {
+        QuizService service = getQuizService();
+
+        service.getQuizzes().enqueue(new retrofit2.Callback<List<Quiz>>() {
+            @Override
+            public void onResponse(Call<List<Quiz>> call, Response<List<Quiz>> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFailure();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Quiz>> call, Throwable t) {
+                callback.onFailure();
+            }
+        });
+    }
+
+
 
 }
 

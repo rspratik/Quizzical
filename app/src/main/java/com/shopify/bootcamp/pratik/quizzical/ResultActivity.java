@@ -54,8 +54,8 @@ public class ResultActivity extends AppCompatActivity {
 
     protected  void SwitchActivity()
     {
-        Intent resultIntent = new Intent(this, MainActivity.class);
-        resultIntent.removeExtra(KEY_SCORE);
+        Intent resultIntent = new Intent(this, ListActivity.class);
+        //resultIntent.removeExtra(KEY_SCORE);
 /*
 
         SharedPreferences preferences = getSharedPreferences("sharedPrefs", 0);
