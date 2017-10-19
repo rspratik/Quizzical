@@ -1,0 +1,16 @@
+{
+  "questions": [
+    {
+      "answer": true,
+      "statement": "two plus two is four"
+    },
+    {
+      "answer": true,
+      "statement": "Ottawa is capital of Canada."
+    },
+    {
+      "answer": true,
+      "statement": "Walking dead has zombies."
+    }
+  ]
+}

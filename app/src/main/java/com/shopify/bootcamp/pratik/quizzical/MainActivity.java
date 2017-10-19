@@ -10,17 +10,31 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+
+import static android.R.attr.type;
+import static android.R.id.list;
+
+public class MainActivity extends AppCompatActivity implements QuizRepository.Callback {
 
     private static final String KEY_LAST_ANSWER = "lastAnswer";
     private static final String KEY_QUESTION_ANSWERED = "questionAnswered";
     private static final String KEY_QUESTION_INDEX = "questionIndex";
     private static final String KEY_SCORE = "score";
+    private static final String KEY_QUIZ = "quiz";
 
-    private Button trueButton, falseButton, nextButton;
-    //private RadioButton trueRadioButton, falseRadioButton;
+
+    //private Button trueButton, falseButton;
+    private Button nextButton;
+    private RadioButton trueRadioButton, falseRadioButton;
+    private RadioGroup radiogroup;
     private TextView questionText, resultText;
     private  Quiz quiz;
     private boolean lastAnswer;
@@ -36,9 +50,14 @@ public class MainActivity extends AppCompatActivity {
         questionText = (TextView) findViewById(R.id.question);
         nextButton = (Button) findViewById(R.id.next_button);
         resultText = (TextView) findViewById(R.id.result);
-        quiz = Quiz.getInstance();
+        //quiz = Quiz.getInstance();
+        //quiz = new QuizRepository(this).getQuiz();
+        //quiz = new QuizRepository(this).getRemoteQuiz();
+        new QuizRepository(this).getRemoteQuiz(this);
 
-        trueButton = (Button) findViewById(R.id.true_button);
+        radiogroup = (RadioGroup) findViewById(R.id.radiogroup);
+
+        /*trueButton = (Button) findViewById(R.id.true_button);
         trueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,9 +73,9 @@ public class MainActivity extends AppCompatActivity {
                 checkAnswer(false);
                 Log.e("bootcamp", "false button clicked");
             }
-        });
+        });*/
 
-        /*trueRadioButton = (RadioButton) findViewById(R.id.radio_true);
+        trueRadioButton = (RadioButton) findViewById(R.id.radio_true);
         trueRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,25 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 checkAnswer(false);
             }
         });
-*/
-        trueButton = (Button) findViewById(R.id.true_button);
-        trueButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkAnswer(true);
-                Log.e("bootcamp", "true button clicked");
-            }
-        });
-
-        falseButton = (Button) findViewById(R.id.false_button);
-        falseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkAnswer(false);
-                Log.e("bootcamp", "false button clicked");
-            }
-        });
-
+        
         nextButton = (Button) findViewById(R.id.next_button);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,12 +109,26 @@ public class MainActivity extends AppCompatActivity {
 
         }else{
             questionIndex = 0;
+            SharedPreferences preferences = getSharedPreferences("sharedPrefs", 0);
+
+            questionAnswered = preferences.getBoolean(KEY_QUESTION_ANSWERED, false);
+            questionIndex = preferences.getInt(KEY_QUESTION_INDEX, 0);
+            lastAnswer = preferences.getBoolean(KEY_LAST_ANSWER, false);
+            score = preferences.getInt(KEY_SCORE, 0);
+            String quizJson = preferences.getString(KEY_QUIZ, "");
+
+            //quiz instance
+            Gson gson = new Gson();
+            Type type = new TypeToken<Quiz>() {}.getType();
+            System.out.println(quizJson);
+            quiz = gson.fromJson(quizJson, type);
         }
-        showQuestion();
+
+        /*showQuestion();
 
         if(questionAnswered){
             checkAnswer(lastAnswer);
-        }
+        }*/
 
     }
 
@@ -133,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
         questionText.setText(getCurrentQuestion().getStatement());
         resultText.setText("");
+        radiogroup.clearCheck();
         nextButton.setEnabled(false);
     }
 
@@ -177,9 +193,16 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean(KEY_LAST_ANSWER,lastAnswer );
         editor.putBoolean(KEY_QUESTION_ANSWERED,questionAnswered);
         editor.putInt(KEY_QUESTION_INDEX, questionIndex);
+        editor.putInt(KEY_SCORE, score);
+        //quiz instance
+        Gson gson = new Gson();
+        Type type = new TypeToken<Quiz>() {}.getType();
+        String json = gson.toJson(quiz, type);
+        System.out.println(json);
+        editor.putString(KEY_QUIZ, json);
 
         // Commit to storage
-        editor.commit();
+        editor.apply();
 
     }
 
@@ -187,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         // Store values between instances here
-        SharedPreferences preferences = getSharedPreferences("sharedPrefs", 0);
+        /*SharedPreferences preferences = getSharedPreferences("sharedPrefs", 0);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(KEY_LAST_ANSWER,lastAnswer );
         editor.putBoolean(KEY_QUESTION_ANSWERED,questionAnswered);
@@ -195,6 +218,22 @@ public class MainActivity extends AppCompatActivity {
 
         // Commit to storage
         editor.commit();
+*/    }
+
+    @Override
+    public void onFailure() {
+        Toast.makeText(this, "Unable to retrieve quiz", Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void onSuccess(Quiz quiz) {
+        this.quiz = quiz;
+        showQuestion();
+
+        if (questionAnswered) {
+            checkAnswer(lastAnswer);
+        }
+
+        //// TODO: 2017-10-19  // list to json --
+    }
 }

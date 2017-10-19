@@ -1,10 +1,12 @@
 package com.shopify.bootcamp.pratik.quizzical;
 
+import java.io.Serializable;
+
 /**
  * Created by androidbootcamp3 on 2017-10-18.
  */
 
-public class Question {
+public class Question implements Serializable {
 
     private  String statement;
     private  boolean answer;
@@ -32,4 +34,11 @@ public class Question {
         this.answer = answer;
     }
 
+    @Override
+    public String toString() {
+        return "Question{" +
+                "statement='" + statement + '\'' +
+                ", answer=" + answer +
+                '}';
+    }
 }

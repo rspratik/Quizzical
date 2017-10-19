@@ -1,5 +1,6 @@
 package com.shopify.bootcamp.pratik.quizzical;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,7 @@ import java.util.List;
  * Created by androidbootcamp3 on 2017-10-18.
  */
 
-public class Quiz {
+public class Quiz implements Serializable {
 
     private List<Question> questions = new ArrayList<>();
     private static Quiz quiz;
@@ -32,5 +33,12 @@ public class Quiz {
             quiz.addQuestion(new Question("The sum of the internal angles of a triangle is 180", true));
         }
         return quiz;
+    }
+
+    @Override
+    public String toString() {
+        return "Quiz{" +
+                "questions=" + questions +
+                '}';
     }
 }
