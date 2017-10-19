@@ -24,7 +24,7 @@ public class ResultActivity extends AppCompatActivity {
     private static final String KEY_QUIZ = "quiz";
 
 
-    private Button try_button;
+    private Button try_button, logout_button;
 
     private  TextView resultText;
     @Override
@@ -34,6 +34,7 @@ public class ResultActivity extends AppCompatActivity {
 
         resultText = (TextView) findViewById(R.id.result_text);
         try_button = (Button) findViewById(R.id.try_button);
+        logout_button = (Button) findViewById(R.id.logout_button);
 
 
         Intent intent = getIntent();
@@ -46,15 +47,34 @@ public class ResultActivity extends AppCompatActivity {
         try_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SwitchActivity();
+                SwitchActivity(0);
                 Log.d("HI", "Retry button clicked");
+            }
+        });
+
+        logout_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SwitchActivity(1);
+                Log.d("HI", "Logout button clicked");
             }
         });
     }
 
-    protected  void SwitchActivity()
+    protected  void SwitchActivity(int i)
     {
-        Intent resultIntent = new Intent(this, ListActivity.class);
+
+        Intent resultIntent = null;
+        if(i==0)
+        {
+            resultIntent = new Intent(this, ListActivity.class);
+        }else if (i == 1)
+        {
+            resultIntent = new Intent(this, LoginActivity.class);
+        } else {
+            resultIntent = new Intent(this, ResultActivity.class);
+
+        }
         //resultIntent.removeExtra(KEY_SCORE);
 /*
 
